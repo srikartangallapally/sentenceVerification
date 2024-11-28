@@ -292,7 +292,7 @@ export default function Game() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/sections');
+                const response = await axios.get('http://localhost:5001/api/sections');
                 setSections(response.data);
                 if (response.data['section-1'] && response.data['section-1'].length > 0) {
                     setCurrentData(response.data['section-1'][0]); 
