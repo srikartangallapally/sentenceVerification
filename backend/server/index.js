@@ -1,23 +1,35 @@
 import express from 'express';
-import { MongoClient } from 'mongodb';
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import {section1, section2} from './schema.js';
 
-// Load environment variables from .env file
 dotenv.config();
 
 const app = express();
 app.use(cors());
 
-// Initialize MongoDB client
-const client = new MongoClient(process.env.MONGODB_URI);
+// Connect to MongoDB using Mongoose
+mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+}).then(() => {
+    console.log("Connected to MongoDB");
+}).catch((error) => {
+    console.error("Error connecting to MongoDB:", error);
+});
 
 // Function to load data from the database
 async function loadData() {
     try {
-        const db = client.db("sentenceverificationbridging");
-        const section1 = await db.collection("section-1").find().toArray();
-        const section2 = await db.collection("section-2").find().toArray();
+        console.log("Fetching section-1 data...");
+        const section1 = await section1.find();
+        console.log("Fetched section-1 data:", section1);
+
+        console.log("Fetching section-2 data...");
+        const section2 = await Image.find({ section: 'section-2' });
+        console.log("Fetched section-2 data:", section2);
+
         return { "section-1": section1, "section-2": section2 };
     } catch (err) {
         console.error("Failed to fetch data:", err);
@@ -27,19 +39,16 @@ async function loadData() {
 
 // API endpoint to fetch sections data
 app.get('/api/sections', async (req, res) => {
+    console.log("Received request for /api/sections");
     const data = await loadData();
+    console.log("Sending data to client:", data);
     res.json(data);
 });
 
 // Define the server port
 const PORT = process.env.PORT || 5001;
 
-// Start the server and connect to MongoDB
-app.listen(PORT, async () => {
-    try {
-        await client.connect();
-        console.log("Connected to MongoDB and server running on port", PORT);
-    } catch (error) {
-        console.error("Error connecting to MongoDB:", error);
-    }
+// Start the server
+app.listen(PORT, () => {
+    console.log("Server running on port", PORT);
 });
