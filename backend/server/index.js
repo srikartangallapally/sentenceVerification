@@ -23,14 +23,14 @@ mongoose.connect(process.env.MONGODB_URI, {
 async function loadData() {
     try {
         console.log("Fetching section-1 data...");
-        const section1 = await section1.find();
-        console.log("Fetched section-1 data:", section1);
+        const section = await section1.find();
+        console.log("Fetched section-1 data:", section);
 
         console.log("Fetching section-2 data...");
-        const section2 = await Image.find({ section: 'section-2' });
-        console.log("Fetched section-2 data:", section2);
+        const section3 = await section2.find();
+        console.log("Fetched section-2 data:", section3);
 
-        return { "section-1": section1, "section-2": section2 };
+        return { "section-1": section, "section-2": section3 };
     } catch (err) {
         console.error("Failed to fetch data:", err);
         return { error: "Failed to load data" };
